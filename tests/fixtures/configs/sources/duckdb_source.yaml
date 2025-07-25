@@ -1,0 +1,6 @@
+# tests/fixtures/configs/sources/duckdb_source.yaml
+inventory:
+    name: inventory
+    time_col: "transaction_date"
+    connection_name: test_duckdb
+    sql: "SELECT product_id, product_name, stock_level, CAST(transaction_date AS DATE) AS transaction_date, 'default' as dim_rental_category, 'default' as my_dimension FROM read_csv_auto('tests/fixtures/data/inventory.csv')"

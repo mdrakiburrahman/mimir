@@ -1,0 +1,4 @@
+# tests/fixtures/configs/metrics/stock_level.yaml
+name: stock_level
+source_name: inventory
+sql: SELECT SUM(stock_level) as stock_level FROM inventory

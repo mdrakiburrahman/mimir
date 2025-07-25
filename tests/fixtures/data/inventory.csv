@@ -1,0 +1,4 @@
+product_id,product_name,stock_level,transaction_date
+1,Laptop,15,2025-07-20
+2,Mouse,120,2025-07-21
+3,Keyboard,75,2025-07-22
