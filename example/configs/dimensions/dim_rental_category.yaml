@@ -1,0 +1,13 @@
+# dimensions/dim_rental_category.yaml
+# The dimension SQL defines extra dimensions on top of existing ones on the source
+
+name: dim_rental_category
+team: sales
+collection: sales-core
+
+sql: |
+    SELECT
+    COALESCE(category.name, 'Uncategorized') as dim_rental_category
+
+source_name: rentals
+...

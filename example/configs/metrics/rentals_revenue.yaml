@@ -1,0 +1,13 @@
+---
+name: rentals_revenue
+team: sales
+collection: sales-core
+
+sql: |
+    SELECT
+    SUM(amount) as rentals_revenue
+    FROM rentals
+
+source_name: rentals
+truncate_incomplete_granularity: true
+...

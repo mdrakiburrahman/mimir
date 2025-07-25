@@ -1,0 +1,71 @@
+name: mimir
+
+networks:
+  backend:
+  frontend:
+
+services:
+  mimir_api:
+    build:
+      context: ..
+      dockerfile: example/server/api.Dockerfile
+    ports:
+      - 8090:8080
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      postgres_sample:
+        condition: service_healthy
+
+  mimir_proxy:
+    build:
+      context: ..
+      dockerfile: example/proxy.Dockerfile
+    ports:
+      - 3306:3306
+    networks:
+      - frontend
+      - backend
+    environment:
+      - MIMIR_API_URL=http://mimir_api:8080
+    depends_on:
+      - mimir_api
+
+  pagila-downloader:
+    image: alpine
+    command: >
+      sh -c "
+        apk add --no-cache wget unzip && 
+        wget https://github.com/devrimgunduz/pagila/archive/refs/heads/master.zip -O /pagila_data/pagila.zip && 
+        unzip -o /pagila_data/pagila.zip -d /pagila_data
+      "
+    volumes:
+      - pagila_data:/pagila_data
+
+  postgres_sample:
+    image: postgres
+    command: ["postgres", "-c", "log_statement=all"]
+    environment: 
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: pagila
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d pagila"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+    volumes:
+      - pagila_data:/pagila_data
+      - ./init-postgres.sh:/docker-entrypoint-initdb.d/init-postgres.sh
+    depends_on:
+      pagila-downloader:
+        condition: service_completed_successfully
+
+volumes:
+  postgres_sample_data:
+  pagila_data:

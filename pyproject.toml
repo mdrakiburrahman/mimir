@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project]
+name = "mimir"
+version = "0.1.0"
+description = "A friendly semantic layer for data analytics."
+readme = "README.md"
+authors = [{ name = "Lorenzo Iacolare", email = "lorenzo@iacolare.it" }]
+license = { file = "LICENSE" }
+requires-python = ">=3.12"
+dependencies = [
+    "duckdb>=1.3.2",
+    "fastapi>=0.116.1",
+    "polars[pyarrow]>=1.31.0",
+    "psycopg2-binary>=2.9.10",
+    "pyarrow>=20.0.0",
+    "pytz>=2025.2",
+    "pyyaml>=6.0.2",
+    "sqlalchemy>=2.0.41",
+    "sqlglot>=27.0.0",
+    "uvicorn>=0.35.0",
+    "pymysql",
+    "requests>=2.32.4",
+    "httpx>=0.28.1",
+    "typer>=0.12.3",
+]
+
+[project.optional-dependencies]
+proxy = [
+    "mysql-mimic>=2.6.4",
+]
+test = [
+    "pytest",
+    "pytest-mock",
+    "pytest-cov",
+    "pytest-asyncio",
+    "duckdb-engine",
+]
+dev = [
+    "ruff",
+    "mypy",
+    "typer",
+    "types-PyYAML",
+    "types-requests",
+    "pre-commit",
+]
+all = [
+    "mimir[proxy,test,dev]",
+]
+
+[project.scripts]
+mimir = "mimir.cli:app"
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = [
+    "pyarrow.*",
+    "mysql_mimic.*"
+]
+ignore_missing_imports = true
+

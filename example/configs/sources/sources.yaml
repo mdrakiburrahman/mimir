@@ -1,0 +1,30 @@
+# sources.yaml
+
+# The source SQL can include the necessary joins and light transformations 
+# to create a clean, denormalized view for analytics
+
+rentals:
+    team: sales-core
+    name: rentals
+    description: Rentals data for sales analytics
+    dimensions:
+      - dim_rental_category
+    sql: |
+        SELECT 
+        rental.rental_id,
+        rental.rental_date as ts,
+        rental.inventory_id,
+        rental.customer_id,
+        rental.return_date as return_ts,
+        rental.staff_id,
+        category.name as category_name,
+        payment.amount as amount
+        FROM rental
+        JOIN inventory on rental.inventory_id = inventory.inventory_id
+        JOIN film_category ON inventory.inventory_id = film_category.category_id
+        JOIN category ON film_category.category_id = category.category_id
+        LEFT JOIN payment payment on payment.rental_id = rental.rental_id
+
+    time_col: rental.rental_date
+    time_col_alias: ts
+    connection_name: pagila_postgres

@@ -1,0 +1,15 @@
+---
+name: action_movies_rented
+team: sales
+collection: sales-core
+
+sql: |
+    SELECT
+    SUM(CASE WHEN dim_rental_category = 'Action' then 1 ELSE 0 END) as action_movies_rented
+    FROM rentals
+
+source_name: rentals
+required_dimensions:
+  - dim_rental_category
+truncate_incomplete_granularity: true
+...

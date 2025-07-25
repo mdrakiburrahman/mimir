@@ -1,0 +1,5 @@
+my_source:
+  name: "my_source"
+  time_col: "created_at"
+  connection_name: "my_connection"
+  sql: "SELECT my_dimension, my_other_dimension, created_at FROM my_table"

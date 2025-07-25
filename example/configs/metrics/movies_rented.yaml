@@ -1,0 +1,13 @@
+---
+name: movies_rented
+team: sales
+collection: sales-core
+
+sql: |
+    SELECT
+    COUNT(rental_id) as movies_rented
+    FROM rentals
+
+source_name: rentals
+truncate_incomplete_granularity: true
+...

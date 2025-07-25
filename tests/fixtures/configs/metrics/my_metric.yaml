@@ -1,0 +1,3 @@
+name: "my_metric"
+source_name: "my_source"
+sql: "SUM(my_column) as my_metric"
