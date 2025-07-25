@@ -1,6 +1,11 @@
 import pytest
 import time
+from typer.testing import CliRunner
+
 from mimir.api.client import Client
+from mimir.cli import app
+
+runner = CliRunner()
 
 
 @pytest.fixture(scope="module")
@@ -89,3 +94,30 @@ def test_e2e_multi_source_inquiry_with_granularity(client):
     assert "ds" in result_table.column_names
     assert "movies_rented" in result_table.column_names
     assert "stock_level" in result_table.column_names
+
+
+@pytest.mark.e2e
+def test_e2e_cli_query(client):
+    """Tests the CLI query command against the running API."""
+    result = runner.invoke(
+        app,
+        [
+            "query",
+            "--host",
+            "http://localhost:8090",
+            "--metric",
+            "movies_rented",
+            "--metric",
+            "rentals_revenue",
+            "--dimension",
+            "dim_rental_category",
+            "--filter",
+            "dim_rental_category = 'Action'",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert "Querying remote Mimir host" in result.stdout
+    assert "Action" in result.stdout
+    assert "movies_rented" in result.stdout
+    assert "rentals_revenue" in result.stdout

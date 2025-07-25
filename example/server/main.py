@@ -46,7 +46,7 @@ async def inquiry(inquiry_request: InquiryRequest) -> StreamingResponse:
     """Endpoint function for inquries"""
 
     table = Inquiry(
-        mimir_engine=_get_engine(), **inquiry_request.parse_granularity().model_dump()
+        mimir_engine=_get_engine(), **inquiry_request.model_dump()
     ).dispatch()
     return StreamingResponse(
         arrow_stream_generator(table), media_type="application/vnd.apache.arrow.stream"

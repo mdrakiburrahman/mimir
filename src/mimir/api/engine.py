@@ -342,7 +342,7 @@ class Inquiry:
         start_date: t.Optional[str] = None,
         end_date: t.Optional[str] = None,
         global_filter: t.Optional[str] = None,
-        granularity: t.Optional[GRANULARITY] = None,
+        granularity: t.Optional[str] = None,
         order_by: t.Optional[str] = None,
         client_sql: t.Optional[str] = None,
     ):
@@ -360,7 +360,7 @@ class Inquiry:
         self.end_date = end_date
 
         self.global_filter = where_clause.this if where_clause else None
-        self.granularity = granularity
+        self.granularity = GRANULARITY[granularity] if granularity else None
 
         self.order_by = order_by_clause.expressions if order_by_clause else None
         self.__client_sql = sqlglot.parse_one(client_sql) if client_sql else None

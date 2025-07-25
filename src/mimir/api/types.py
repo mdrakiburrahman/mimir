@@ -35,6 +35,15 @@ class GRANULARITY(Enum):
     )
 
 
+class APIGranularity(str, Enum):
+    """A JSON-serializable enum for the API layer."""
+
+    TIME = "TIME"
+    DATE = "DATE"
+    MONTH = "MONTH"
+    YEAR = "YEAR"
+
+
 class CONFIG_TYPE(Enum):
     """An enum for the different types of configurations."""
 

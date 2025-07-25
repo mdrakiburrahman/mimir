@@ -167,3 +167,4 @@ uv.lock
 temp*
 .vscode/
 .python-version
+.DS_Store

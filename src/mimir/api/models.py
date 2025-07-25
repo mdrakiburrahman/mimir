@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict, Field
-from mimir.api.types import GRANULARITY
+from mimir.api.types import APIGranularity
 
 import typing as t
 
@@ -24,14 +24,7 @@ class InquiryRequest(BaseModel):
     metrics: list[str]
     start_date: t.Optional[str] = None
     end_date: t.Optional[str] = None
-    granularity: t.Optional[t.Union[str, GRANULARITY]] = None
+    granularity: t.Optional[APIGranularity] = None
     global_filter: t.Optional[str] = None
     order_by: t.Optional[str] = None
     client_sql: t.Optional[str] = None
-
-    def parse_granularity(self) -> t.Self:
-        """Parses the granularity string into a GRANULARITY enum."""
-        if isinstance(self.granularity, str):
-            self.granularity = GRANULARITY[self.granularity]
-
-        return self

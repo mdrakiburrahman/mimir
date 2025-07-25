@@ -10,6 +10,7 @@ from mimir.api.engine import MimirEngine, Inquiry
 from mimir.api.loaders import FileConfigLoader
 from mimir.api.exceptions import MimirConfigError, MimirQueryError
 from mimir.api.models import InquiryRequest
+from mimir.api.types import APIGranularity
 
 
 app = typer.Typer(
@@ -155,15 +156,16 @@ def query(
     """
     Runs a query against the Mimir engine.
     """
+    api_granularity = APIGranularity(granularity.upper()) if granularity else None
     request = InquiryRequest(
         metrics=metrics,
         dimensions=dimensions,
-        granularity=granularity,
+        granularity=api_granularity,
         start_date=start_date,
         end_date=end_date,
         global_filter=global_filter,
         order_by=order_by,
-    ).parse_granularity()
+    )
 
     try:
         if host:
