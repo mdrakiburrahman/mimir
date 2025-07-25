@@ -1,6 +1,6 @@
 # Mimir
 
-[![CI](https://github.com/lorenzo-iacolare/mimir/actions/workflows/ci.yaml/badge.svg)](https://github.com/lorenzo-iacolare/mimir/actions/workflows/ci.yaml)
+[![CI](https://github.com/liaco/mimir/actions/workflows/ci.yaml/badge.svg)](https://github.com/liaco/mimir/actions/workflows/ci.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Python Version](https://img.shields.io/badge/python-3.12+-blue.svg)
 
