@@ -1,16 +1,26 @@
 # Mimir
 
-A friendly semantic layer for data analytics.
+[![CI](https://github.com/lorenzo-iacolare/mimir/actions/workflows/ci.yaml/badge.svg)](https://github.com/lorenzo-iacolare/mimir/actions/workflows/ci.yaml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Python Version](https://img.shields.io/badge/python-3.12+-blue.svg)
+
+A friendly, lightweight semantic layer for data analytics, inspired by Airbnb's Minerva.
 
 > **Disclaimer**
 >
-> Mimir is a project heavily insipred by Airbnb works on metrics stores and it's built to showcase a simple implementation of a semantic layer. It's a playground for demonstrating architectural patterns and exploring what a "metrics-as-code" workflow can feel like.
+> Mimir is a project born out of curiosity to explore the core ideas behind a metrics store. It's a playground for demonstrating architectural patterns and seeing what a "metrics-as-code" workflow can feel like.
 >
-> So while it's built with solid engineering principles in mind, it is **not (and probably would never be) meant for production use**. Feel free to clone it, break it, and learn from it!
+> So while it's built with solid engineering principles in mind, it is **not (and probably will never be) meant for production use**. Feel free to clone it, break it, learn from it, and have fun!
+
+## The "Why":
+
+You can find more about the context and the purpose of this project in this [Medium article](https://medium.com/@lorenzo_iacolare/inspired-by-airbnbs-minerva-building-a-lightweight-metrics-store-in-python-d27714adb6f5).
 
 ## Architecture Overview
 
-Mimir is designed to separate the development and consumption of metrics. The CLI is defined as the (optional) primary tool for the "Control Plane" (managing definitions), while the server components form the "Service Plane" (serving data to clients).
+Mimir is designed to separate the development and consumption of metrics. The CLI is the primary tool for the "Control Plane" (managing definitions), while the server components form the "Service Plane" (serving data to clients).
+
+This separation allows analytics engineers to define and validate metrics in a version-controlled, git-native workflow, while data consumers (whether BI tools or ad-hoc users) can query a stable, unified API.
 
 ```
 +-----------------------+      +----------------+      +-------------------+      +---------------------+
@@ -27,36 +37,36 @@ Mimir is designed to separate the development and consumption of metrics. The CL
                                (MySQL Protocol)        +---------^---------+      +---------------------+
                                                                  |
 +-----------------------+                                        | (HTTP API)
-| Ad-hoc User           |----->|   Mimir CLI    |-----------------+
-| (on their laptop)     |      | (query --host) |
+| Ad-hoc User           |----->|  Mimir Client  |-----------------+
+| (on their laptop)     |      | (Python/Jupyter)|
 +-----------------------+      +----------------+
 ```
 
-## Architectural Components
+### Core Components
 
-*   **API Server:** A FastAPI-based server that accepts `Inquiry` requests and returns data in the speedy Apache Arrow format.
-*   **SQL Proxy:** A clever MySQL-compatible proxy that lets you query Mimir with standard SQL. It translates your SQL into Mimir API requests behind the scenes.
-*   **Query Engine:** The brains of the operation, lives either local or inside your Mimir Server. It parses your configs, builds queries, and wrangles data from all your sources.
-
-## Core Features
-
-*   **Configuration-driven:** Define all your metrics and dimensions in simple, human-readable YAML files.
-*   **Connect to Multiple Sources:** Mimir can connect to several data sources, including PostgreSQL, MySQL, and DuckDB.
-*   **Speak SQL:** Query your metrics using the language you already know and love.
+*   **API Server:** A FastAPI server that accepts `Inquiry` requests and returns data in Apache Arrow format.
+*   **SQL Proxy:** A MySQL-compatible proxy (using `mysql-mimic`) that lets you query Mimir with the SQL you already know and love. It translates your queries into Mimir API requests behind the scenes.
+*   **Query Engine:** The brains of the operation. It uses a **split-apply-combine** strategy: it splits an inquiry into atomic queries for each data source, executes them in parallel, and uses an in-memory DuckDB instance to perform the final join.
 
 ## Quickstart with the Example
 
-This guide will get you up and running with the example application.
+### 1. Prerequisites
 
-### 1. Install Dependencies
+Ensure you have the following tools installed:
+*   Python 3.12+
+*   Docker and Docker Compose
+*   `make`
+*   `curl` (for installing `uv`)
 
-First, get all the necessary dependencies installed. The `install` command will use `uv` to set up a virtual environment and grab the dependencies.
+### 2. Install Dependencies
+
+This project uses `uv` for fast dependency management. The `install-dev` command will create a virtual environment, install all necessary packages, and set up pre-commit hooks.
 
 ```bash
-make install
+make install-dev
 ```
 
-### 2. Start the Services
+### 3. Start the Services
 
 Build and start the Docker containers for the Mimir API, the SQL proxy, and a sample PostgreSQL database.
 
@@ -64,27 +74,20 @@ Build and start the Docker containers for the Mimir API, the SQL proxy, and a sa
 make example-up
 ```
 
-This command will:
-- Build the Docker images for the API and proxy.
-- Start all services defined in `example/docker-compose.yaml`.
-- Spin up a PostgreSQL database with the classic Pagila sample dataset.
+### 4. Query Your Data
 
-### 3. Query Your Data
-
-Once the services are humming, you can query Mimir in two ways:
+Once the services are running, you can query Mimir in two ways:
 
 #### Through the SQL Proxy
 
 Connect to the proxy using any MySQL-compatible client (e.g., `mysql`, DBeaver, DataGrip).
 
-**Connection Details:**
-- **Host:** `localhost`
-- **Port:** `3306`
-- **User/Password:** (anything you want!)
-
-You can then run standard SQL queries. Mimir will figure out the rest.
+*   **Host:** `localhost`
+*   **Port:** `3306`
+*   **User/Password:** (anything you want, the example proxy has no auth)
 
 ```sql
+-- This query will be translated into an API call
 SELECT
   dim_rental_category,
   AGG(movies_rented),
@@ -96,24 +99,63 @@ WHERE
 GROUP BY
   dim_rental_category;
 ```
+> **Note:** The SQL Proxy is experimental and does not yet support CTEs, subqueries, or derived tables.
 
 #### Through the API
 
-You can also talk to the API directly. The docs are waiting for you at `http://localhost:8090/docs`.
+You can also talk to the API directly. The interactive docs are available at `http://localhost:8090/docs`.
 
-### 4. Stop the Services
+### 5. Stop the Services
 
-When you're done, you can shut everything down gracefully.
-
+When you're done exploring:
 ```bash
 make example-down
 ```
 
+## Configuration Reference
+
+Mimir is driven by YAML configuration files located in the `configs` directory.
+
+### Sources (`configs/sources/`)
+
+Sources define the "denormalized layer" and point to your underlying data. They are defined as a dictionary in one or more YAML files.
+
+| Key               | Type   | Required | Description                                                              |
+| ----------------- | ------ | -------- | ------------------------------------------------------------------------ |
+| `name`            | string | Yes      | The unique name for the source.                                          |
+| `time_col`        | string | Yes      | The name of the primary timestamp/date column in the underlying table.   |
+| `connection_name` | string | Yes      | The name of the secret file (w/o .json) in the `secrets` directory.      |
+| `sql`             | string | Yes      | A SQL query that defines the source, including joins and transformations.|
+| `dimensions`      | list   | No       | A list of dimension names that can be joined to this source.             |
+| `time_col_alias`  | string | No       | An optional alias for the `time_col`.                                    |
+| `description`     | string | No       | A human-readable description of the source.                              |
+
+### Metrics (`configs/metrics/`)
+
+Metrics define the quantitative calculations for your business.
+
+| Key               | Type   | Required | Description                                                              |
+| ----------------- | ------ | -------- | ------------------------------------------------------------------------ |
+| `name`            | string | Yes      | The unique name for the metric.                                          |
+| `source_name`     | string | Yes      | The name of the source this metric is built on.                          |
+| `sql`             | string | Yes      | The SQL aggregation expression (e.g., `SUM(amount) as revenue`).         |
+| `description`     | string | No       | A human-readable description of the metric.                              |
+| `required_dimensions` | list | No   | A list of dimensions that must be available when querying this metric.   |
+
+### Dimensions (`configs/dimensions/`)
+
+Dimensions define the categorical fields you can group by.
+
+| Key           | Type   | Required | Description                                                              |
+| ------------- | ------ | -------- | ------------------------------------------------------------------------ |
+| `name`        | string | Yes      | The unique name for the dimension.                                       |
+| `source_name` | string | Yes      | The name of the source this dimension applies to.                        |
+| `sql`         | string | Yes      | The SQL expression for the dimension column (e.g., `COALESCE(c.name, 'N/A')`). |
+| `description` | string | No       | A human-readable description of the dimension.                           |
+
 ## Command-Line Interface (CLI)
 
-> **Note:** The CLI is currently in a very experimental stage.
-
-Mimir includes a powerful command-line interface for developing, validating, and querying your semantic layer. You can invoke it using `uv run mimir -- [COMMAND]`.
+Mimir includes a powerful CLI for developing, validating, and querying your semantic layer. You can invoke it using `uv run mimir -- [COMMAND]`.
 
 ### Project Scaffolding
 
@@ -181,21 +223,18 @@ Runs a query against the Mimir engine. This command can be run in two modes:
 1.  **Local Mode:** Runs the query engine directly on your machine, using local config and secret files.
 2.  **Remote Mode:** Acts as a client to a running Mimir API server.
 
+Here's how you would run the same query from the SQL example using the CLI against a running Mimir server:
+
 ```bash
-# Run a query locally
 uv run mimir query \
+  --host http://localhost:8090 \
   --metric movies_rented \
+  --metric rentals_revenue \
   --dimension dim_rental_category \
   --filter "dim_rental_category = 'Action'"
-
-# Get the compiled SQL without running the query (for debugging)
-uv run mimir query --metric movies_rented --dry-run
-
-# Run a query against a hosted Mimir server
-uv run mimir query \
-  --host http://mimir.mycompany.com \
-  --metric movies_rented
 ```
+
+You can also run it locally (without the `--host` flag) or use `--dry-run` to see the compiled SQL without executing it.
 
 ## Extensibility
 
@@ -218,3 +257,16 @@ Tired of YAML files? Want to load your metric definitions from a database, a Git
 2.  **Implement the required methods** (`get`, `get_all`, `get_secret`).
 
 Pass an instance of your new loader to the `MimirEngine`, and you're off to the races.
+
+## Contributing & Roadmap
+
+This project is a learning experiment, but contributions are absolutely welcome! Please feel free to open an issue or submit a pull request.
+
+### Roadmap
+
+Here are some ideas for improvements. Help is wanted!
+
+*   **Better config validation:** Improve handling of malformed configurations and the CLI validate tool
+*   **More Data Sources:** Add native connection support for BigQuery, Snowflake, etc.
+*   **Enhanced SQL Proxy:** Add support for more complex queries and easier virtual tables discoverability.
+*   **Web UI:** A simple web interface for exploring and managing definitions.
