@@ -74,6 +74,9 @@ class MimirEngine:
                     f"Secret '{conf['connection_name']}' not found for source '{conf.get('name', 'unknown')}'"
                 )
 
+            if "CONNECTION_HOST" in os.environ:
+                connection_config["host"] = os.environ["CONNECTION_HOST"]
+
             connection = ConnectionFactory(
                 connection_name=conf["connection_name"],
                 connection_config=connection_config,

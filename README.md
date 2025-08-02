@@ -91,7 +91,7 @@ This separation allows analytics engineers to define and validate metrics in a v
 1. If the pre-commit hooks give you pain:
 
    ```bash
-   git add . && git commit --no-verify -m "C" && git push   
+   git add . && git commit --no-verify -m "C" && git push
    ```
 
 ### Install Dependencies
