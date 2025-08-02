@@ -121,7 +121,7 @@ And using your local host machine (mounted to VSCode port in WSL) - `http://loca
 If the pre-commit hooks give you pain:
 
 ```bash
-git commit --no-verify -m "C" && git push
+git add . && git commit --no-verify -m "C" && git push
 ```
 
 ### Query Your Data
