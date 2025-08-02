@@ -114,9 +114,11 @@ Once the services are running, you can query Mimir in two ways:
 
 Connect to the proxy using any MySQL-compatible client (e.g., `mysql`, DBeaver, DataGrip).
 
-*   **Host:** `localhost`
+*   **Host:** `localhost` (in CloudBeaver, use `mimir_proxy`)
 *   **Port:** `3306`
-*   **User/Password:** (anything you want, the example proxy has no auth)
+*   **User/Password:** (leave as blank strings, there's no auth)
+
+The docker compose includes CloudBeaver, accessible at `http://localhost:8978`.
 
 ```sql
 -- This query will be translated into an API call
@@ -132,6 +134,8 @@ GROUP BY
   dim_rental_category;
 ```
 > **Note:** The SQL Proxy is experimental and does not yet support CTEs, subqueries, or derived tables.
+
+![Query](.imgs/query-mysql.png)
 
 #### Through the API
 

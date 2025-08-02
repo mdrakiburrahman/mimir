@@ -32,6 +32,19 @@ services:
     depends_on:
       - mimir_api
 
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: cloudbeaver
+    ports:
+      - "8978:8978"
+    networks:
+      - frontend
+      - backend
+    volumes:
+      - cloudbeaver_workspace:/opt/cloudbeaver/workspace
+    depends_on:
+      - mimir_proxy
+
   pagila-downloader:
     image: alpine
     command: >
@@ -69,3 +82,4 @@ services:
 volumes:
   postgres_sample_data:
   pagila_data:
+  cloudbeaver_workspace:
