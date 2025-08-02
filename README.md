@@ -52,7 +52,7 @@ This separation allows analytics engineers to define and validate metrics in a v
 
 ## Quickstart with the Example
 
-### 1. Prerequisites
+### Prerequisites
 
 1. Get a fresh new WSL machine up:
 
@@ -88,7 +88,7 @@ This separation allows analytics engineers to define and validate metrics in a v
    chmod +x ${GIT_ROOT}/contrib/bootstrap-dev-env.sh && ${GIT_ROOT}/contrib/bootstrap-dev-env.sh && source ~/.bashrc
    ```
 
-### 2. Install Dependencies
+### Install Dependencies
 
 This project uses `uv` for fast dependency management. The `install-dev` command will create a virtual environment, install all necessary packages, and set up pre-commit hooks.
 
@@ -96,7 +96,7 @@ This project uses `uv` for fast dependency management. The `install-dev` command
 make install-dev
 ```
 
-### 3. Start the Services
+### Start the Services
 
 Build and start the Docker containers for the Mimir API, the SQL proxy, and a sample PostgreSQL database.
 
@@ -108,7 +108,7 @@ To setup intellisense, open any Python file, then:
 
 ![Intellisense](.imgs/intellisense.png)
 
-### 4. Query Your Data
+### Query Your Data
 
 Once the services are running, you can query Mimir in two ways:
 
@@ -172,7 +172,7 @@ LEFT JOIN payment payment on payment.rental_id = rental.rental_id;
 
 You can also talk to the API directly. The interactive docs are available at `http://localhost:8090/docs`.
 
-### 5. Stop the Services
+### Stop the Services
 
 When you're done exploring:
 ```bash
