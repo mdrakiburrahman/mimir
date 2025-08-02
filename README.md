@@ -128,6 +128,23 @@ And using your local host machine (mounted to VSCode port in WSL) - `http://loca
 
 ![Debug API Schema](.imgs/debug-api-schema.png)
 
+You can fire a call via `mysql` CLI and debug it E2E:
+
+```bash
+mysql -h localhost -P 13306 -u "" -p"" --protocol=TCP << 'EOF'
+SELECT
+  dim_rental_category,
+  AGG(movies_rented),
+  AGG(rentals_revenue)
+FROM
+  mimir.metrics
+WHERE
+  dim_rental_category = 'Action'
+GROUP BY
+  dim_rental_category;
+EOF
+```
+
 ### Query Your Data
 
 Once the services are running, you can query Mimir in two ways:
