@@ -83,7 +83,7 @@ This separation allows analytics engineers to define and validate metrics in a v
 
    ```bash
    GIT_ROOT=$(git rev-parse --show-toplevel)
-   chmod +x ${GIT_ROOT}/contrib/bootstrap-dev-env.sh && ${GIT_ROOT}/contrib/bootstrap-dev-env.sh
+   chmod +x ${GIT_ROOT}/contrib/bootstrap-dev-env.sh && ${GIT_ROOT}/contrib/bootstrap-dev-env.sh && source ~/.bashrc
    ```
 
 ### 2. Install Dependencies
