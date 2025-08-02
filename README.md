@@ -118,6 +118,12 @@ And using your local host machine (mounted to VSCode port in WSL) - `http://loca
 
 ![Debug API Schema](.imgs/debug-api-schema.png)
 
+If the pre-commit hooks give you pain:
+
+```bash
+git commit --no-verify -m "C" && git push
+```
+
 ### Query Your Data
 
 Once the services are running, you can query Mimir in two ways:
