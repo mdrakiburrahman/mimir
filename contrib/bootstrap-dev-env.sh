@@ -56,6 +56,12 @@ if ! command -v mysql &> /dev/null; then
     sudo apt install -y mysql-client
 fi
 
+if ! command -v psql &> /dev/null; then
+    echo "PostgreSQL CLI (psql) not found - installing..."
+    sudo apt update
+    sudo apt install -y postgresql-client
+fi
+
 echo ""
 echo "┌───────────────────────────────┐"
 echo "│ Installing VS Code extensions │"
