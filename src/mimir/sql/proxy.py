@@ -73,7 +73,8 @@ async def main():
     """Starts the Mimir SQL proxy."""
     logging.basicConfig(level=logging.DEBUG)
     server = MysqlServer(session_factory=MimirProxySession)
-    await server.serve_forever(port=3306)
+    port = int(os.environ.get("PORT", 3306))
+    await server.serve_forever(port=port)
 
 
 if __name__ == "__main__":

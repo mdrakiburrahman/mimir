@@ -114,6 +114,10 @@ Fire `mimir_api` via the VSCode debugger:
 
 ![Debug API](.imgs/debug-api.png)
 
+Fire `mimir_proxy` via the VSCode debugger:
+
+![Debug API](.imgs/debug-proxy.png)
+
 And using your local host machine (mounted to VSCode port in WSL) - `http://localhost:18080/schema`:
 
 ![Debug API Schema](.imgs/debug-api-schema.png)
