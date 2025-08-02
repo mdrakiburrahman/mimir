@@ -88,6 +88,12 @@ This separation allows analytics engineers to define and validate metrics in a v
    chmod +x ${GIT_ROOT}/contrib/bootstrap-dev-env.sh && ${GIT_ROOT}/contrib/bootstrap-dev-env.sh && source ~/.bashrc
    ```
 
+1. If the pre-commit hooks give you pain:
+
+  ```bash
+  git add . && git commit --no-verify -m "C" && git push
+  ```
+
 ### Install Dependencies
 
 This project uses `uv` for fast dependency management. The `install-dev` command will create a virtual environment, install all necessary packages, and set up pre-commit hooks.
@@ -121,12 +127,6 @@ Fire `mimir_proxy` via the VSCode debugger:
 And using your local host machine (mounted to VSCode port in WSL) - `http://localhost:18080/schema`:
 
 ![Debug API Schema](.imgs/debug-api-schema.png)
-
-If the pre-commit hooks give you pain:
-
-```bash
-git add . && git commit --no-verify -m "C" && git push
-```
 
 ### Query Your Data
 
