@@ -104,9 +104,19 @@ Build and start the Docker containers for the Mimir API, the SQL proxy, and a sa
 make example-up
 ```
 
-To setup intellisense, open any Python file, then:
+### Debug locally
+
+First, to setup intellisense, open any Python file, then:
 
 ![Intellisense](.imgs/intellisense.png)
+
+Fire `mimir_api` via the VSCode debugger:
+
+![Debug API](.imgs/debug-api.png)
+
+And using your local host machine (mounted to VSCode port in WSL) - `http://localhost:18080/schema`:
+
+![Debug API Schema](.imgs/debug-api-schema.png)
 
 ### Query Your Data
 

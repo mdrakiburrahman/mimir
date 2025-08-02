@@ -13,7 +13,19 @@ import typing as t
 
 import logging
 
-logger = logging.getLogger("uvicorn.error")
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+logger = logging.getLogger(__name__)
+
+base_path = os.environ.get("CONFIGS_PATH")
+secret_base_path = os.environ.get("SECRETS_PATH")
+
+if not base_path:
+    raise RuntimeError("CONFIGS_PATH environment variable is not set or empty")
+if not secret_base_path:
+    raise RuntimeError("SECRETS_PATH environment variable is not set or empty")
+
+logger.info(f"CONFIGS_PATH: {base_path}")
+logger.info(f"SECRETS_PATH: {secret_base_path}")
 
 app = FastAPI()
 
@@ -21,8 +33,8 @@ app = FastAPI()
 def _get_engine():
     return MimirEngine(
         config_loader=FileConfigLoader(
-            base_path=os.environ.get("CONFIGS_PATH"),
-            secret_base_path=os.environ.get("SECRETS_PATH"),
+            base_path=base_path,
+            secret_base_path=secret_base_path,
         )
     )
 
