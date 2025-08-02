@@ -50,6 +50,12 @@ if ! command -v uv &> /dev/null; then
     curl -LsSf https://astral.sh/uv/install.sh | sh
 fi
 
+if ! command -v mysql &> /dev/null; then
+    echo "mysql CLI not found - installing..."
+    sudo apt update
+    sudo apt install -y mysql-client
+fi
+
 echo ""
 echo "┌───────────────────────────────┐"
 echo "│ Installing VS Code extensions │"
