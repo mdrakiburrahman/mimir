@@ -139,6 +139,35 @@ GROUP BY
 
 ![Query](.imgs/query-mysql.png)
 
+Notice how the actual data is coming out of Postgres, and the tables look like this:
+
+```sql
+SELECT * FROM rental;
+```
+
+![Query](.imgs/query-pg-raw.png)
+
+And our `rentals` source, defined in `sources.yaml`, looks like this:
+
+```sql
+SELECT 
+rental.rental_id,
+rental.rental_date as ts,
+rental.inventory_id,
+rental.customer_id,
+rental.return_date as return_ts,
+rental.staff_id,
+category.name as category_name,
+payment.amount as amount
+FROM rental
+JOIN inventory on rental.inventory_id = inventory.inventory_id
+JOIN film_category ON inventory.inventory_id = film_category.category_id
+JOIN category ON film_category.category_id = category.category_id
+LEFT JOIN payment payment on payment.rental_id = rental.rental_id;
+```
+
+![Query](.imgs/query-pg-rentals.png)
+
 #### Through the API
 
 You can also talk to the API directly. The interactive docs are available at `http://localhost:8090/docs`.
