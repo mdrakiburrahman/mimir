@@ -18,6 +18,8 @@ You can find more about the context and the purpose of this project in this [Med
 
 ## Architecture Overview
 
+![Query](.imgs/architecture.png)
+
 Mimir is designed to separate the development and consumption of metrics. The CLI is the primary tool for the "Control Plane" (managing definitions), while the server components form the "Service Plane" (serving data to clients).
 
 This separation allows analytics engineers to define and validate metrics in a version-controlled, git-native workflow, while data consumers (whether BI tools or ad-hoc users) can query a stable, unified API.
