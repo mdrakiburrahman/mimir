@@ -102,6 +102,10 @@ Build and start the Docker containers for the Mimir API, the SQL proxy, and a sa
 make example-up
 ```
 
+To setup intellisense, open any Python file, then:
+
+![Intellisense](.imgs/intellisense.png)
+
 ### 4. Query Your Data
 
 Once the services are running, you can query Mimir in two ways:
