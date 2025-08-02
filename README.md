@@ -52,11 +52,39 @@ This separation allows analytics engineers to define and validate metrics in a v
 
 ### 1. Prerequisites
 
-Ensure you have the following tools installed:
-*   Python 3.12+
-*   Docker and Docker Compose
-*   `make`
-*   `curl` (for installing `uv`)
+1. Get a fresh new WSL machine up:
+
+   ```powershell
+   # Delete old WSL
+   wsl --unregister Ubuntu-24.04
+
+   # Create new WSL
+   wsl --install -d Ubuntu-24.04
+   ```
+
+1. Clone the repo, and open VSCode in it:
+
+   ```bash
+   cd ~/
+
+   git config --global user.name "Raki Rahman"
+   git config --global user.email "mdrakiburrahman@gmail.com"
+   git clone https://github.com/mdrakiburrahman/data-playground.git
+
+   cd data-playground/
+   code .
+   ```
+
+1. Reset your docker WSL integration since this is a new VM:
+
+   > `Docker Desktop: Settings > Resources > WSL Integration > Turn off/on Ubuntu-24.04`
+
+1. Run the bootstrapper script, that installs all tools idempotently:
+
+   ```bash
+   GIT_ROOT=$(git rev-parse --show-toplevel)
+   chmod +x ${GIT_ROOT}/contrib/bootstrap-dev-env.sh && ${GIT_ROOT}/contrib/bootstrap-dev-env.sh
+   ```
 
 ### 2. Install Dependencies
 
